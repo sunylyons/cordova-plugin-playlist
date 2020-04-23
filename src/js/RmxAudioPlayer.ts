@@ -377,7 +377,7 @@ export class RmxAudioPlayer {
    * Call this function to emit an onStatus event via the on('status') handler.
    * Internal use only, to raise events received from the native interface.
    */
-  protected onStatus(trackId: string, type: RmxAudioStatusMessage, value: OnStatusCallbackUpdateData | OnStatusTrackChangedData | OnStatusErrorCallbackData) {
+  protected onStatus(trackId: string, type: RmxAudioStatusMessage, OnStatusCallbackUpdateData | OnStatusTrackChangedData | OnStatusErrorCallbackData) {
     const status = { type, trackId, value };
     if (this.options.verbose) {
       log.log(`RmxAudioPlayer.onStatus: ${RmxAudioStatusMessageDescriptions[type]}(${type}) [${trackId}]: `, value);

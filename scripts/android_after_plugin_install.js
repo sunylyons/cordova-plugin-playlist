@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs-extra');
-const q = require('q');
 const {
   getAndroidJavaSrcPath, getPackageName, getProjectName, updateAndroidManifestApplication, doCodeGen,
 } = require('./utils');
@@ -18,7 +17,7 @@ const filesToGenerate = [
 ];
 
 module.exports = function androidAfterPluginInstall(context) {
-  const deferral = q.defer();
+  const deferral = context.requireCordovaModule('q').defer();
 
   try {
     const projectName = getProjectName(context);

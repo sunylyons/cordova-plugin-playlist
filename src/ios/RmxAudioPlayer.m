@@ -67,14 +67,15 @@ static char kPlayerItemTimeRangesContext;
  *
  *
  */
-- (void) initialize:(CDVInvokedUrlCommand*) command
+- (MPRemoteCommandHandlerStatus) initialize:(CDVInvokedUrlCommand*) command
 {
     NSLog(@"RmxAudioPlayer.execute=initialize");
     self.statusCallbackId = command.callbackId;
     [self onStatus:RMXSTATUS_REGISTER trackId:@"INIT" param:nil];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) setOptions:(CDVInvokedUrlCommand*) command {
+- (MPRemoteCommandHandlerStatus) setOptions:(CDVInvokedUrlCommand*) command {
     NSDictionary* options = [command.arguments objectAtIndex:0];
     if (options == nil) {
         options = @{};
@@ -84,9 +85,10 @@ static char kPlayerItemTimeRangesContext;
     // We don't do anything with these yet.
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:options];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) setPlaylistItems:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) setPlaylistItems:(CDVInvokedUrlCommand *) command {
     NSMutableArray* items = [command.arguments objectAtIndex:0];
     NSDictionary* options = [command.arguments objectAtIndex:1];
 
@@ -134,9 +136,10 @@ static char kPlayerItemTimeRangesContext;
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) addItem:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) addItem:(CDVInvokedUrlCommand *) command {
     NSMutableDictionary* item = [command.arguments objectAtIndex:0];
 
     NSLog(@"RmxAudioPlayer.execute=addItem, %@", item);
@@ -149,10 +152,11 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) addAllItems:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) addAllItems:(CDVInvokedUrlCommand *) command {
     NSMutableArray* items = [command.arguments objectAtIndex:0];
     NSLog(@"RmxAudioPlayer.execute=addAllItems, %@", items);
 
@@ -160,10 +164,11 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) removeItems:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) removeItems:(CDVInvokedUrlCommand *) command {
     NSMutableArray* items = [command.arguments objectAtIndex:0];
     NSLog(@"RmxAudioPlayer.execute=removeItems, %@", items);
 
@@ -181,10 +186,11 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:removed];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) removeItem:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) removeItem:(CDVInvokedUrlCommand *) command {
     NSString* trackIndex = [command.arguments objectAtIndex:0];
     NSString* trackId = [command.arguments objectAtIndex:1];
 
@@ -194,28 +200,31 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:success];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) clearAllItems:(CDVInvokedUrlCommand*) command {
+- (MPRemoteCommandHandlerStatus) clearAllItems:(CDVInvokedUrlCommand*) command {
     NSLog(@"RmxAudioPlayer.execute=clearAllItems");
     [self removeAllTracks:NO];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) play:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) play:(CDVInvokedUrlCommand *) command {
     NSLog(@"RmxAudioPlayer.execute=play");
     [self playCommand:NO];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) playTrackByIndex:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) playTrackByIndex:(CDVInvokedUrlCommand *) command {
     NSNumber* argVal = [command argumentAtIndex:0 withDefault:[NSNumber numberWithInt:0]];
 
     NSLog(@"RmxAudioPlayer.execute=playTrackByIndex, %@", argVal);
@@ -235,10 +244,11 @@ static char kPlayerItemTimeRangesContext;
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) playTrackById:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) playTrackById:(CDVInvokedUrlCommand *) command {
     NSString* trackId = [command.arguments objectAtIndex:0];
     NSLog(@"RmxAudioPlayer.execute=playTrackById, %@", trackId);
 
@@ -265,38 +275,42 @@ static char kPlayerItemTimeRangesContext;
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"The playlist is empty!"];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) pause:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) pause:(CDVInvokedUrlCommand *) command {
     NSLog(@"RmxAudioPlayer.execute=pause");
     _isWaitingToStartPlayback = NO;
     [self pauseCommand:NO];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) skipForward:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) skipForward:(CDVInvokedUrlCommand *) command {
     NSLog(@"RmxAudioPlayer.execute=skipForward");
     [self playNext:NO];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) skipBack:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) skipBack:(CDVInvokedUrlCommand *) command {
     NSLog(@"RmxAudioPlayer.execute=skipBack");
     [self playPrevious:NO];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) seekTo:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) seekTo:(CDVInvokedUrlCommand *) command {
     NSNumber* argVal = [command argumentAtIndex:0 withDefault:[NSNumber numberWithFloat:0.0]];
     NSLog(@"RmxAudioPlayer.execute=seekTo, %@", argVal);
 
@@ -305,10 +319,11 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) seekToQueuePosition:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) seekToQueuePosition:(CDVInvokedUrlCommand *) command {
     NSNumber* argVal = [command argumentAtIndex:0 withDefault:[NSNumber numberWithFloat:0.0]];
     NSLog(@"RmxAudioPlayer.execute=seekToQueuePosition, %@", argVal);
 
@@ -319,10 +334,11 @@ static char kPlayerItemTimeRangesContext;
         CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) setPlaybackRate:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) setPlaybackRate:(CDVInvokedUrlCommand *) command {
     NSNumber* argVal = [command argumentAtIndex:0 withDefault:[NSNumber numberWithFloat:1.0]];
     NSLog(@"RmxAudioPlayer.execute=setPlaybackRate, %@", argVal);
 
@@ -330,10 +346,11 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) setPlaybackVolume:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) setPlaybackVolume:(CDVInvokedUrlCommand *) command {
     NSNumber* argVal = [command argumentAtIndex:0 withDefault:[NSNumber numberWithFloat:self.volume]];
     NSLog(@"RmxAudioPlayer.execute=setPlaybackVolume, %@", argVal);
 
@@ -341,10 +358,11 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) setLoopAll:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) setLoopAll:(CDVInvokedUrlCommand *) command {
     id loop2 = [command argumentAtIndex:0];
     if (([loop2 isKindOfClass:[NSString class]] && [loop2 isEqualToString:@"true"]) || [loop2 boolValue]) {
         self.loop = YES;
@@ -355,61 +373,68 @@ static char kPlayerItemTimeRangesContext;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) getPlaybackRate:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) getPlaybackRate:(CDVInvokedUrlCommand *) command {
     NSLog(@"RmxAudioPlayer.execute=getPlaybackRate, %f", self.rate);
     float rate = self.rate;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:rate];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) getPlaybackVolume:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) getPlaybackVolume:(CDVInvokedUrlCommand *) command {
     NSLog(@"RmxAudioPlayer.execute=getPlaybackVolume, %f", self.volume);
     float volume = self.volume;
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:volume];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) getPlaybackPosition:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) getPlaybackPosition:(CDVInvokedUrlCommand *) command {
     float currentPosition = [self getTrackCurrentTime:nil];
     NSLog(@"RmxAudioPlayer.execute=getPlaybackPosition, %f", currentPosition);
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:currentPosition];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) getCurrentBuffer:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) getCurrentBuffer:(CDVInvokedUrlCommand *) command {
     NSDictionary* trackStatus = [self getPlayerStatusItem:nil];
     NSLog(@"RmxAudioPlayer.execute=getCurrentBuffer, %@", trackStatus);
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:trackStatus];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) getQueuePosition:(CDVInvokedUrlCommand *) command {
+- (MPRemoteCommandHandlerStatus) getQueuePosition:(CDVInvokedUrlCommand *) command {
     float position = self.queuePosition;
     NSLog(@"RmxAudioPlayer.execute=getQueuePosition, %f", position);
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:position];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
-- (void) release:(CDVInvokedUrlCommand*)command {
+- (MPRemoteCommandHandlerStatus) release:(CDVInvokedUrlCommand*)command {
     NSLog(@"RmxAudioPlayer.execute=release");
     _isWaitingToStartPlayback = NO;
     [self releaseResources];
 
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 
@@ -480,7 +505,7 @@ static char kPlayerItemTimeRangesContext;
  *
  */
 
-- (void) playCommand:(BOOL)isCommand
+- (MPRemoteCommandHandlerStatus) playCommand:(BOOL)isCommand
 {
     _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
@@ -501,9 +526,10 @@ static char kPlayerItemTimeRangesContext;
         NSString * action = @"music-controls-play";
         NSLog(@"%@", action);
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) pauseCommand:(BOOL)isCommand
+- (MPRemoteCommandHandlerStatus) pauseCommand:(BOOL)isCommand
 {
     _wasPlayingInterrupted = NO;
     [self initializeMPCommandCenter];
@@ -526,12 +552,13 @@ static char kPlayerItemTimeRangesContext;
         NSString * action = @"music-controls-pause";
         NSLog(@"%@", action);
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) playPrevious:(BOOL)isCommand
+- (MPRemoteCommandHandlerStatus) playPrevious:(BOOL)isCommand
 {
     _wasPlayingInterrupted = NO;
-    [self initializeMPCommandCenter];
+    //[self initializeMPCommandCenter];
 
     [[self avQueuePlayer] playPreviousItem];
 
@@ -546,12 +573,13 @@ static char kPlayerItemTimeRangesContext;
                                 };
         [self onStatus:RMX_STATUS_SKIP_BACK trackId:playerItem.trackId param:param];
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) playNext:(BOOL)isCommand
+- (MPRemoteCommandHandlerStatus) playNext:(BOOL)isCommand
 {
     _wasPlayingInterrupted = NO;
-    [self initializeMPCommandCenter];
+    //[self initializeMPCommandCenter];
 
     [[self avQueuePlayer] advanceToNextItem];
 
@@ -566,13 +594,14 @@ static char kPlayerItemTimeRangesContext;
                                 };
         [self onStatus:RMX_STATUS_SKIP_FORWARD trackId:playerItem.trackId param:param];
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
-- (void) seekTo:(float)positionTime isCommand:(BOOL)isCommand
+- (MPRemoteCommandHandlerStatus) seekTo:(float)positionTime isCommand:(BOOL)isCommand
 {
     //Handle seeking with the progress slider on lockscreen or control center
     _wasPlayingInterrupted = NO;
-    [self initializeMPCommandCenter];
+    //[self initializeMPCommandCenter];
 
     CMTime seekToTime = CMTimeMakeWithSeconds(positionTime, 1000);
     [[self avQueuePlayer] seekToTime:seekToTime toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
@@ -584,6 +613,7 @@ static char kPlayerItemTimeRangesContext;
         AudioTrack* playerItem = (AudioTrack *)[self avQueuePlayer].currentItem;
         [self onStatus:RMXSTATUS_SEEK trackId:playerItem.trackId param:@{@"position": @(positionTime)}];
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 - (float) rate
@@ -1203,7 +1233,7 @@ static char kPlayerItemTimeRangesContext;
  *
  */
 
-- (void) initializeMPCommandCenter
+- (MPRemoteCommandHandlerStatus) initializeMPCommandCenter
 {
     if (!_commandCenterRegistered) {
         MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
@@ -1225,6 +1255,7 @@ static char kPlayerItemTimeRangesContext;
 
         _commandCenterRegistered = YES;
     }
+    return MPRemoteCommandHandlerStatusSuccess;
 }
 
 - (NSMutableArray*) currentItems
